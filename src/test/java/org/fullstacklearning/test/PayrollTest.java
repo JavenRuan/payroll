@@ -13,6 +13,7 @@ import org.fullstacklearning.payrolldatabaseImplementation.InMemoryPayrollDataba
 import org.fullstacklearning.payrolldomain.*;
 import org.fullstacklearning.payrollimplementation.*;
 import org.fullstacklearning.transactionImplementation.*;
+import org.fullstacklearning.util.DateUtil;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -115,7 +116,7 @@ public class PayrollTest {
 				15.25, database);
 		t.execute();
 		TimeCardTransaction tct = new TimeCardTransaction(
-				new Date(2005, 7, 31), 8.0, empId, database);
+				DateUtil.getDate(2005, 7, 31), 8.0, empId, database);
 		tct.execute();
 
 		Employee e = database.GetEmployee(empId);
@@ -125,7 +126,7 @@ public class PayrollTest {
 		assertTrue(pc instanceof HourlyClassification);
 		HourlyClassification hc = (HourlyClassification) pc;
 
-		TimeCard tc = hc.GetTimeCard(new Date(2005, 7, 31));
+		TimeCard tc = hc.GetTimeCard(DateUtil.getDate(2005, 7, 31));
 		assertNotNull(tc);
 		assertEquals(8.0, tc.getHours(), .0);
 	}
@@ -136,7 +137,7 @@ public class PayrollTest {
 		AddCommissionedEmployee t = new AddCommissionedEmployee(empId, "Bill",
 				"Home", 2000, 15.25, database);
 		t.execute();
-		SalesReceiptTransaction tct = new SalesReceiptTransaction(new Date(
+		SalesReceiptTransaction tct = new SalesReceiptTransaction(DateUtil.getDate(
 				2005, 7, 31), 250.00, empId, database);
 		tct.execute();
 
@@ -147,7 +148,7 @@ public class PayrollTest {
 		assertTrue(pc instanceof CommissionedClassification);
 		CommissionedClassification cc = (CommissionedClassification) pc;
 
-		SalesReceipt sr = cc.GetSalesReceipt(new Date(2005, 7, 31));
+		SalesReceipt sr = cc.GetSalesReceipt(DateUtil.getDate(2005, 7, 31));
 		assertNotNull(sr);
 		assertEquals(250.00, sr.getSaleAmount(), .001);
 	}
@@ -165,9 +166,9 @@ public class PayrollTest {
 		int memberId = 86; // Maxwell Smart
 		database.AddUnionMember(memberId, e);
 		ServiceChargeTransaction sct = new ServiceChargeTransaction(memberId,
-				new Date(2005, 8, 8), 12.95, database);
+				DateUtil.getDate(2005, 8, 8), 12.95, database);
 		sct.execute();
-		ServiceCharge sc = af.GetServiceCharge(new Date(2005, 8, 8));
+		ServiceCharge sc = af.GetServiceCharge(DateUtil.getDate(2005, 8, 8));
 		assertNotNull(sc);
 		assertEquals(12.95, sc.getAmount(), .001);
 	}
@@ -343,7 +344,12 @@ public class PayrollTest {
 		AddSalariedEmployee t = new AddSalariedEmployee(empId, "Bob", "Home",
 				1000.00, database);
 		t.execute();
-		Date payDate = new Date(2001, 11, 30);
+		//Date payDate = DateUtil.getDate(2001, 11, 30);
+		Calendar ca = Calendar.getInstance();
+		ca.set(Calendar.YEAR, 2001);
+		ca.set(Calendar.MONTH, 11-1);
+		ca.set(Calendar.DAY_OF_MONTH, 30);
+		Date payDate = ca.getTime();
 		PaydayTransaction pt = new PaydayTransaction(payDate, database);
 		pt.execute();
 		Paycheck pc = pt.GetPaycheck(empId);
@@ -362,7 +368,7 @@ public class PayrollTest {
 		AddSalariedEmployee t = new AddSalariedEmployee(empId, "Bob", "Home",
 				1000.00, database);
 		t.execute();
-		Date payDate = new Date(2001, 11, 29);
+		Date payDate = DateUtil.getDate(2001, 11, 29);
 		PaydayTransaction pt = new PaydayTransaction(payDate, database);
 		pt.execute();
 		Paycheck pc = pt.GetPaycheck(empId);
@@ -375,7 +381,12 @@ public class PayrollTest {
 		AddHourlyEmployee t = new AddHourlyEmployee(empId, "Bill", "Home",
 				15.25, database);
 		t.execute();
-		Date payDate = new Date(2001, 11-1, 9); // Friday
+		//Date payDate = DateUtil.getDate(2020, 9-1, 25); // Friday
+		Calendar ca = Calendar.getInstance();
+		ca.set(Calendar.YEAR, 2020);
+		ca.set(Calendar.MONTH, 9-1);
+		ca.set(Calendar.DAY_OF_MONTH, 25);
+		Date payDate = ca.getTime();
 		PaydayTransaction pt = new PaydayTransaction(payDate, database);
 		pt.execute();
 		ValidatePaycheck(pt, empId, payDate, 0.0);
@@ -398,7 +409,7 @@ public class PayrollTest {
 		AddHourlyEmployee t = new AddHourlyEmployee(empId, "Bill", "Home",
 				15.25, database);
 		t.execute();
-		Date payDate = new Date(2001, 11-1, 9); // Friday
+		Date payDate = DateUtil.getDate(2001, 11, 9); // Friday
 
 		TimeCardTransaction tc = new TimeCardTransaction(payDate, 2.0, empId,
 				database);
@@ -414,7 +425,7 @@ public class PayrollTest {
 		AddHourlyEmployee t = new AddHourlyEmployee(empId, "Bill", "Home",
 				15.25, database);
 		t.execute();
-		Date payDate = new Date(2001, 11-1, 9); // Friday
+		Date payDate = DateUtil.getDate(2001, 11, 9); // Friday
 
 		TimeCardTransaction tc = new TimeCardTransaction(payDate, 9.0, empId,
 				database);
@@ -430,7 +441,7 @@ public class PayrollTest {
 		AddHourlyEmployee t = new AddHourlyEmployee(empId, "Bill", "Home",
 				15.25, database);
 		t.execute();
-		Date payDate = new Date(2001, 11, 8); // Thursday
+		Date payDate = DateUtil.getDate(2001, 11, 8); // Thursday
 
 		TimeCardTransaction tc = new TimeCardTransaction(payDate, 9.0, empId,
 				database);
@@ -448,7 +459,7 @@ public class PayrollTest {
 		AddHourlyEmployee t = new AddHourlyEmployee(empId, "Bill", "Home",
 				15.25, database);
 		t.execute();
-		Date payDate = new Date(2001, 11-1, 9); // Friday
+		Date payDate = DateUtil.getDate(2001, 11, 9); // Friday
 
 		TimeCardTransaction tc = new TimeCardTransaction(payDate, 2.0, empId,
 				database);
@@ -471,8 +482,8 @@ public class PayrollTest {
 		AddHourlyEmployee t = new AddHourlyEmployee(empId, "Bill", "Home",
 				15.25, database);
 		t.execute();
-		Date payDate = new Date(2001, 11-1, 9); // Friday
-		Date dateInPreviousPayPeriod = new Date(2001, 10, 30);
+		Date payDate = DateUtil.getDate(2001, 11, 9); // Friday
+		Date dateInPreviousPayPeriod = DateUtil.getDate(2001, 10, 30);
 
 		TimeCardTransaction tc = new TimeCardTransaction(payDate, 2.0, empId,
 				database);
@@ -491,7 +502,12 @@ public class PayrollTest {
 		AddCommissionedEmployee t = new AddCommissionedEmployee(empId, "Bill",
 				"Home", 1500, 10, database);
 		t.execute();
-		Date payDate = new Date(2001, 11, 16); // Payday
+		//Date payDate = DateUtil.getDate(2001, 11, 16); // Payday
+		Calendar ca = Calendar.getInstance();
+		ca.set(Calendar.YEAR, 2001);
+		ca.set(Calendar.MONTH, 11-1);
+		ca.set(Calendar.DAY_OF_MONTH, 16);
+		Date payDate = ca.getTime();
 		PaydayTransaction pt = new PaydayTransaction(payDate, database);
 		pt.execute();
 		ValidatePaycheck(pt, empId, payDate, 1500.0);
@@ -503,7 +519,7 @@ public class PayrollTest {
 		AddCommissionedEmployee t = new AddCommissionedEmployee(empId, "Bill",
 				"Home", 1500, 10, database);
 		t.execute();
-		Date payDate = new Date(2001, 11, 16); // Payday
+		Date payDate = DateUtil.getDate(2001, 11, 16); // Payday
 
 		SalesReceiptTransaction sr = new SalesReceiptTransaction(payDate,
 				5000.00, empId, database);
@@ -519,7 +535,7 @@ public class PayrollTest {
 		AddCommissionedEmployee t = new AddCommissionedEmployee(empId, "Bill",
 				"Home", 1500, 10, database);
 		t.execute();
-		Date payDate = new Date(2001, 11-1, 9); // wrong friday
+		Date payDate = DateUtil.getDate(2001, 11-1, 9); // wrong friday
 
 		SalesReceiptTransaction sr = new SalesReceiptTransaction(payDate,
 				5000.00, empId, database);
@@ -537,7 +553,7 @@ public class PayrollTest {
 		AddCommissionedEmployee t = new AddCommissionedEmployee(empId, "Bill",
 				"Home", 1500, 10, database);
 		t.execute();
-		Date payDate = new Date(2001, 11, 16); // Payday
+		Date payDate = DateUtil.getDate(2001, 11, 16); // Payday
 
 		SalesReceiptTransaction sr = new SalesReceiptTransaction(payDate,
 				5000.00, empId, database);
@@ -561,7 +577,7 @@ public class PayrollTest {
 		AddCommissionedEmployee t = new AddCommissionedEmployee(empId, "Bill",
 				"Home", 1500, 10, database);
 		t.execute();
-		Date payDate = new Date(2001, 11, 16); // Payday
+		Date payDate = DateUtil.getDate(2001, 11, 16); // Payday
 
 		SalesReceiptTransaction sr = new SalesReceiptTransaction(payDate,
 				5000.00, empId, database);
@@ -587,7 +603,7 @@ public class PayrollTest {
 		ChangeMemberTransaction cmt = new ChangeMemberTransaction(empId,
 				memberId, 9.42, database);
 		cmt.execute();
-		Date payDate = new Date(2001, 11, 30);
+		Date payDate = DateUtil.getDate(2001, 11, 30);
 		PaydayTransaction pt = new PaydayTransaction(payDate, database);
 		pt.execute();
 		Paycheck pc = pt.GetPaycheck(empId);
@@ -609,7 +625,7 @@ public class PayrollTest {
 		ChangeMemberTransaction cmt = new ChangeMemberTransaction(empId,
 				memberId, 9.42, database);
 		cmt.execute();
-		Date payDate = new Date(2001, 11-1, 9);
+		Date payDate = DateUtil.getDate(2001, 11, 9);
 		ServiceChargeTransaction sct = new ServiceChargeTransaction(memberId,
 				payDate, 19.42, database);
 		sct.execute();
@@ -637,9 +653,9 @@ public class PayrollTest {
 		ChangeMemberTransaction cmt = new ChangeMemberTransaction(empId,
 				memberId, 9.42, database);
 		cmt.execute();
-		Date payDate = new Date(2001, 11-1, 9);
-		Date earlyDate = new Date(2001, 11, 2); // previous Friday
-		Date lateDate = new Date(2001, 11, 16); // next Friday
+		Date payDate = DateUtil.getDate(2001, 11, 9);
+		Date earlyDate = DateUtil.getDate(2001, 11, 2); // previous Friday
+		Date lateDate = DateUtil.getDate(2001, 11, 16); // next Friday
 		ServiceChargeTransaction sct = new ServiceChargeTransaction(memberId,
 				payDate, 19.42, database);
 		sct.execute();
@@ -662,4 +678,5 @@ public class PayrollTest {
 		assertEquals(9.42 + 19.42, pc.getDeductions(), .001);
 		assertEquals((8 * 15.24) - (9.42 + 19.42), pc.getNetPay(), .001);
 	}
+	
 }

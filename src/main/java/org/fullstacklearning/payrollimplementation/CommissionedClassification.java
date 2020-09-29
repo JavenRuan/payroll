@@ -10,7 +10,7 @@ import org.fullstacklearning.util.DateUtil;
 public class CommissionedClassification extends PaymentClassification {
 	private final double baseRate;
 	private final double commissionRate;
-	private Hashtable<Date, SalesReceipt> salesReceipts = new Hashtable<Date, SalesReceipt>();
+	private Hashtable<String, SalesReceipt> salesReceipts = new Hashtable<String, SalesReceipt>();
 
 	public CommissionedClassification(double baseRate, double commissionRate) {
 		this.baseRate = baseRate;
@@ -26,11 +26,11 @@ public class CommissionedClassification extends PaymentClassification {
 	}
 
 	public void AddSalesReceipt(SalesReceipt receipt) {
-		salesReceipts.put(receipt.getDate(), receipt);
+		salesReceipts.put(DateUtil.getYearMonthDayString(receipt.getDate()), receipt);
 	}
 
 	public SalesReceipt GetSalesReceipt(Date time) {
-		return salesReceipts.get(time);
+		return salesReceipts.get(DateUtil.getYearMonthDayString(time));
 	}
 
 	public double calculatePay(Paycheck paycheck) {

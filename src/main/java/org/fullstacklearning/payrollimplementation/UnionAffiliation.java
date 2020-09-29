@@ -61,10 +61,10 @@ public class UnionAffiliation implements Affiliation {
 		Calendar dayCa = Calendar.getInstance();
 		dayCa.setTime(payPeriodStart);
 		Calendar payPeriodEndCa = Calendar.getInstance();
-		dayCa.setTime(payPeriodEnd);
+		payPeriodEndCa.setTime(payPeriodEnd);
 
 		int fridays = 0;
-		while (dayCa.before(payPeriodEndCa)) {
+		while (dayCa.getTimeInMillis()<=payPeriodEndCa.getTimeInMillis()) {
 			if (dayCa.get(Calendar.DAY_OF_WEEK) == Calendar.FRIDAY) {
 				fridays++;
 			}
